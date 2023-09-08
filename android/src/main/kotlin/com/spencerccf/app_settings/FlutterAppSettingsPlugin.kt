@@ -31,7 +31,7 @@ class FlutterAppSettingsPlugin: FlutterPlugin, MethodCallHandler, ActivityAware 
     channel.setMethodCallHandler(this)
   }
 
-  override fun onMethodCall(call: MethodCall, result: Result) {
+  override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
     when(call.method) {
       "openSettings" -> handleOpenSettings(call, result)
       "openSettingsPanel" -> handleOpenSettingsPanel(call, result)
@@ -62,7 +62,7 @@ class FlutterAppSettingsPlugin: FlutterPlugin, MethodCallHandler, ActivityAware 
   /**
    * Handle the 'openSettings' method call.
    */
-  private fun handleOpenSettings(call: MethodCall, result: Result) {
+  private fun handleOpenSettings(call: MethodCall, result: MethodChannel.Result) {
     val asAnotherTask = call.argument<Boolean>("asAnotherTask") ?: false
 
     when(call.argument<String>("type")) {
@@ -107,7 +107,7 @@ class FlutterAppSettingsPlugin: FlutterPlugin, MethodCallHandler, ActivityAware 
   /**
    * Handle the 'openSettingsPanel' method call.
    */
-  private fun handleOpenSettingsPanel(call: MethodCall, result: Result) {
+  private fun handleOpenSettingsPanel(call: MethodCall, result: MethodChannel.Result) {
     if(Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
       result.success(null)
       return
@@ -141,7 +141,7 @@ class FlutterAppSettingsPlugin: FlutterPlugin, MethodCallHandler, ActivityAware 
   /**
    * Open the application settings.
    */
-  private fun openAppSettings(result: Result, asAnotherTask: Boolean = false) {
+  private fun openAppSettings(result: MethodChannel.Result, asAnotherTask: Boolean = false) {
     val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
     if (asAnotherTask) {
       intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
@@ -158,7 +158,7 @@ class FlutterAppSettingsPlugin: FlutterPlugin, MethodCallHandler, ActivityAware 
   /**
    * Open the alarm settings.
    */
-  private fun openAlarmSettings(result: Result, asAnotherTask: Boolean = false) {
+  private fun openAlarmSettings(result: MethodChannel.Result, asAnotherTask: Boolean = false) {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
       val uri = this.activity?.let { Uri.fromParts("package", it.packageName, null) }
 
@@ -176,7 +176,7 @@ class FlutterAppSettingsPlugin: FlutterPlugin, MethodCallHandler, ActivityAware 
   /**
    * Open the battery optimization settings.
    */
-  private fun openBatteryOptimizationSettings(result: Result, asAnotherTask: Boolean = false) {
+  private fun openBatteryOptimizationSettings(result: MethodChannel.Result, asAnotherTask: Boolean = false) {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
       openSettings(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS, result, asAnotherTask)
     } else {
@@ -187,7 +187,7 @@ class FlutterAppSettingsPlugin: FlutterPlugin, MethodCallHandler, ActivityAware 
   /**
    * Open the hotspot settings.
    */
-  private fun openHotspotSettings(result: Result, asAnotherTask: Boolean) {
+  private fun openHotspotSettings(result: MethodChannel.Result, asAnotherTask: Boolean) {
     // See https://stackoverflow.com/questions/6406668/launch-a-hidden-android-settings-activity-from-a-program
     val intent = Intent().setClassName(
       "com.android.settings",
@@ -199,7 +199,7 @@ class FlutterAppSettingsPlugin: FlutterPlugin, MethodCallHandler, ActivityAware 
   /**
    * Open the Notification settings.
    */
-  private fun openNotificationSettings(result: Result, asAnotherTask: Boolean) {
+  private fun openNotificationSettings(result: MethodChannel.Result, asAnotherTask: Boolean) {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
       this.activity?.let {
         val intent = Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS)
@@ -223,7 +223,7 @@ class FlutterAppSettingsPlugin: FlutterPlugin, MethodCallHandler, ActivityAware 
    */
   private fun openSettings(
     url: String,
-    result: Result,
+    result: MethodChannel.Result,
     asAnotherTask: Boolean = false,
   ) {
     try {
@@ -245,7 +245,7 @@ class FlutterAppSettingsPlugin: FlutterPlugin, MethodCallHandler, ActivityAware 
    */
   private fun openSettingsWithIntent(
     intent: Intent,
-    result: Result,
+    result: MethodChannel.Result,
     asAnotherTask: Boolean = false,
   ) {
     try {
@@ -265,7 +265,7 @@ class FlutterAppSettingsPlugin: FlutterPlugin, MethodCallHandler, ActivityAware 
   /**
    * Open the VPN settings.
    */
-  private fun openVpnSettings(result: Result, asAnotherTask: Boolean) {
+  private fun openVpnSettings(result: MethodChannel.Result, asAnotherTask: Boolean) {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
       openSettings(Settings.ACTION_VPN_SETTINGS, result, asAnotherTask)
     } else {
